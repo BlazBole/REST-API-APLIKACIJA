@@ -1,9 +1,9 @@
 package com.example.myapiapp
 
 data class ContactItem(
-    val id: String,
-    val fullname: String,
+    val id: String?,
+    val userName: String,
     val email: String,
-    val phone: Long,
-    val address: String
+    val password: String,
+    val phone: String
 )

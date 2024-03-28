@@ -1,5 +1,6 @@
 package com.example.myapiapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -9,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.example.myapiapp.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -16,29 +18,36 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-const val BASE_URL = "http://172.27.244.142:5009/"
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var txtId: TextView
+    lateinit var binding: ActivityMainBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        geMyData();
+        getMyData();
+        binding.btnToMain.setOnClickListener(){
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
-    private fun geMyData() {
+    private fun getMyData() {
         val retrofitBuilder = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BASE_URL)
+            .baseUrl(Constants.BASE_URL)
             .build().create(ContactsService::class.java)
 
         val retrofitData = retrofitBuilder.getData()
@@ -52,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                 val myStringBuilder = StringBuilder()
 
                 for(myData in responseBody){
-                    myStringBuilder.append(myData.fullname)
+                    myStringBuilder.append(myData.userName)
                     myStringBuilder.append("\n")
                 }
 
