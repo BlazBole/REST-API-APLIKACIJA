@@ -37,6 +37,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         getMyData();
+
+        val userName = intent.getStringExtra("USER_NAME").toString()
+
+        // Prikaz imena uporabnika v TextView
+        val twShowUser: TextView = findViewById(R.id.twShowUser)
+        twShowUser.text = "Prijavljeni uporabnik: $userName"
+
         binding.btnToMain.setOnClickListener(){
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
@@ -74,4 +81,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
+
+
 }

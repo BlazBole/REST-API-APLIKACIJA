@@ -1,5 +1,6 @@
 package com.example.myapiapp
 import android.view.textclassifier.ConversationActions.Request
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -20,5 +21,8 @@ interface ContactsService {
 
     @GET("api/Users/username/{username}")
     fun getUserByUsername(@Path("username") username: String): Call<ContactItem>
+
+    @POST("api/Users/login")
+    fun loginUser(@Body loginRequest: ContactItem): Call<ResponseBody>
 
 }
