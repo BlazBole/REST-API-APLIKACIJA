@@ -1,5 +1,6 @@
 package com.example.myapiapp
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +10,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.example.myapiapp.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
@@ -38,11 +40,29 @@ class MainActivity : AppCompatActivity() {
 
         getMyData();
 
-        val userName = intent.getStringExtra("USER_NAME").toString()
-
-        // Prikaz imena uporabnika v TextView
+        val sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        var userName = sharedPrefs.getString("USERNAME", "")
         val twShowUser: TextView = findViewById(R.id.twShowUser)
-        twShowUser.text = "Prijavljeni uporabnik: $userName"
+        twShowUser.text = userName
+
+        if(binding.twShowUser.text != ""){
+            binding.btnLogout.isVisible = true;
+        }
+
+        binding.btnLogout.setOnClickListener {
+            // Odstranjevanje shranjenega uporabniškega imena iz SharedPreferences
+            val sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+            val editor = sharedPrefs.edit()
+            editor.remove("USERNAME")
+            editor.apply()
+
+            // Počistite vse druge shranjene podatke ali izvedite druge potrebne operacije ob odjavi
+
+            // Po odjavi preusmerite uporabnika na LoginActivity
+            val intent = Intent(this@MainActivity, LoginActivity::class.java)
+            startActivity(intent)
+            finish() // Ta klic bo izbrisal MainActivity iz back stacka, tako da se uporabnik ne more vrniti nazaj na to aktivnost
+        }
 
         binding.btnToMain.setOnClickListener(){
             val intent = Intent(this, RegisterActivity::class.java)

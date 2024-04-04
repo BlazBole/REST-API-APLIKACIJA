@@ -44,19 +44,14 @@ class RegisterActivity : AppCompatActivity() {
         setRequiredField(binding.etEmail)
         setRequiredField(binding.etPassword)
 
-        //initialize animations
 
         var fade_in = AnimationUtils.loadAnimation(this, R.anim.fade_in)
         var bottom_down = AnimationUtils.loadAnimation(this, R.anim.bottom_down)
 
-        //setting the bottom down animation on top layout
-
         binding.topLinearLayout.animation = bottom_down
 
-        //handler for other layouts
         var handler = Handler()
         var runnable = Runnable{
-            //set fade in animation
             binding.cardView.animation = fade_in
             binding.cardView2.animation = fade_in
             binding.textView.animation = fade_in
@@ -119,48 +114,39 @@ class RegisterActivity : AppCompatActivity() {
             .baseUrl(Constants.BASE_URL)
             .build().create(ContactsService::class.java)
 
-        // Najprej preverimo, ali že obstaja uporabnik z istim e-poštnim naslovom
         val emailCheckCall = retrofitBuilder.getUserByEmail(email)
         val usernameCheckCall = retrofitBuilder.getUserByUsername(username)
 
-        // Asinhrono izvedemo obe preverjanji
         emailCheckCall.enqueue(object : Callback<ContactItem> {
             override fun onResponse(call: Call<ContactItem>, emailResponse: Response<ContactItem>) {
                 if (emailResponse.isSuccessful) {
-                    // Uporabnik z istim e-poštnim naslovom že obstaja
                     val existingUser = emailResponse.body()
                     Log.d("RegisterActivity", "User with email $email already exists: $existingUser")
                     Toast.makeText(context, "Ta uporabnik že obstaja", Toast.LENGTH_SHORT).show()
                 } else {
-                    // Preverimo uporabniško ime, če e-poštni naslov ni bil najden
                     usernameCheckCall.enqueue(object : Callback<ContactItem> {
                         override fun onResponse(call: Call<ContactItem>, usernameResponse: Response<ContactItem>) {
                             if (usernameResponse.isSuccessful) {
-                                // Uporabnik z istim uporabniškim imenom že obstaja
                                 val existingUser = usernameResponse.body()
                                 Log.d("RegisterActivity", "User with username $username already exists: $existingUser")
                                 Toast.makeText(context, "Uporabniško ime že obstaja", Toast.LENGTH_SHORT).show()
                             } else {
-                                // Uporabnik s tem e-poštnim naslovom in uporabniškim imenom ne obstaja, dodajemo novega
                                 val newUser = ContactItem(id = null, username, email, password, phone)
                                 val addUserCall = retrofitBuilder.addUser(newUser)
 
                                 addUserCall.enqueue(object : Callback<ContactItem> {
                                     override fun onResponse(call: Call<ContactItem>, response: Response<ContactItem>) {
                                         if (response.isSuccessful) {
-                                            // Uspešno dodan uporabnik
                                             Log.d("RegisterActivity", "User added successfully")
                                             // Po dodajanju uporabnika zaženemo novo aktivnost
                                             val intent = Intent(context, LoginActivity::class.java)
                                             context.startActivity(intent)
                                         } else {
-                                            // Obdelava napake, če POST zahteva ni uspela
                                             Log.d("RegisterActivity", "Failed to add user: ${response.code()}")
                                         }
                                     }
 
                                     override fun onFailure(call: Call<ContactItem>, t: Throwable) {
-                                        // Obdelava napake, če je prišlo do napake med izvajanjem zahteve
                                         Log.d("RegisterActivity", "onFailure: ${t.message}")
                                     }
                                 })
@@ -168,7 +154,6 @@ class RegisterActivity : AppCompatActivity() {
                         }
 
                         override fun onFailure(call: Call<ContactItem>, t: Throwable) {
-                            // Obdelava napake, če je prišlo do napake med izvajanjem zahteve
                             Log.d("RegisterActivity", "onFailure: ${t.message}")
                         }
                     })
@@ -176,7 +161,6 @@ class RegisterActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<ContactItem>, t: Throwable) {
-                // Obdelava napake, če je prišlo do napake med izvajanjem zahteve
                 Log.d("RegisterActivity", "onFailure: ${t.message}")
             }
         })
@@ -184,7 +168,7 @@ class RegisterActivity : AppCompatActivity() {
 
 
     private fun setRequiredField(editText: EditText) {
-        val hint = editText.hint ?: return // Preverimo, če obstaja napis "hint"
+        val hint = editText.hint ?: return
         val builder = SpannableStringBuilder(hint)
         val primaryColor = ContextCompat.getColor(this, R.color.primary)
         val redColorSpan = ForegroundColorSpan(primaryColor)

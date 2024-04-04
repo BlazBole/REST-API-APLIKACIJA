@@ -1,5 +1,6 @@
 package com.example.myapiapp
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -69,6 +70,16 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+        binding.textView2.setOnClickListener(){
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.btnAnim.setOnClickListener(){
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
     fun loginUser(loginRequest: ContactItem) {
@@ -83,22 +94,23 @@ class LoginActivity : AppCompatActivity() {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful) {
                     val message = response.body()?.string()
-                    // Uporabnik se je uspešno prijavil, obdelajte odgovor
                     Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
 
+                    val userName = message
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                    intent.putExtra("USER_NAME", loginRequest.email.toString())
+                    val sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                    val editor = sharedPrefs.edit()
+                    editor.putString("USERNAME", userName)
+                    editor.apply()
                     startActivity(intent)
                     finish()
                 } else {
-                    // Prišlo je do napake pri prijavi uporabnika
                     val errorBody = response.errorBody()?.string()
                     Toast.makeText(applicationContext, errorBody, Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                // Prišlo je do napake pri izvajanju zahtevka
                 Log.e("LoginActivity", "Error: ${t.message}")
                 Toast.makeText(applicationContext, "Napaka pri izvajanju zahtevka", Toast.LENGTH_SHORT).show()
             }
