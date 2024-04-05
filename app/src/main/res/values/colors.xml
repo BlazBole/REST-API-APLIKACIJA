@@ -71,4 +71,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="primary">#0857F6</color>
     <color name="secondary">#517FEE</color>
+    <color name="underline">#CDCDCD</color>
 </resources>

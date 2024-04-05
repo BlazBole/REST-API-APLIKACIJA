@@ -1,106 +1,111 @@
 package com.example.myapiapp
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
+import android.view.MenuItem
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
+import com.example.myapiapp.databinding.ActivityMain2Binding
 import com.example.myapiapp.databinding.ActivityMainBinding
-import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-
-
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var txtId: TextView
+
     lateinit var binding: ActivityMainBinding
-
-
+    lateinit var toggle : ActionBarDrawerToggle
+    @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
-        getMyData();
+        val drawerLayout = binding.drawerLayout
+        val navView = binding.navView
 
+        toggle = ActionBarDrawerToggle(this, drawerLayout, R.drawable.baseline_menu_24, R.drawable.baseline_arrow_back_24)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        val navHeaderView = navView.getHeaderView(0)
+
+        // Pridobitev TextView-ja z ID-jem twUserName znotraj nav-headerja
+        val twUserName = navHeaderView.findViewById<TextView>(R.id.twUserName)
+
+        // Tukaj lahko nastavite uporabniško ime na pridobljen TextView
         val sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        var userName = sharedPrefs.getString("USERNAME", "")
-        val twShowUser: TextView = findViewById(R.id.twShowUser)
-        twShowUser.text = userName
+        val username = sharedPrefs.getString("USERNAME","")
 
-        if(binding.twShowUser.text != ""){
-            binding.btnLogout.isVisible = true;
+// Preverite, ali je uporabnik prijavljen
+        if (username.isNullOrEmpty()) {
+            // Če uporabnik ni prijavljen, nastavite besedilo na "gost"
+            twUserName.text = "gost"
+        } else {
+            // Če je uporabnik prijavljen, nastavite besedilo na uporabniško ime
+            twUserName.text = username
+
+            val navMenu = navView.menu
+            // Nastavite vidnost elementa menija nav_logOut na true
+            navMenu.findItem(R.id.nav_logOut)?.isVisible = true
         }
 
-        binding.btnLogout.setOnClickListener {
-            // Odstranjevanje shranjenega uporabniškega imena iz SharedPreferences
-            val sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-            val editor = sharedPrefs.edit()
-            editor.remove("USERNAME")
-            editor.apply()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-            // Počistite vse druge shranjene podatke ali izvedite druge potrebne operacije ob odjavi
-
-            // Po odjavi preusmerite uporabnika na LoginActivity
-            val intent = Intent(this@MainActivity, LoginActivity::class.java)
-            startActivity(intent)
-            finish() // Ta klic bo izbrisal MainActivity iz back stacka, tako da se uporabnik ne more vrniti nazaj na to aktivnost
-        }
-
-        binding.btnToMain.setOnClickListener(){
-            val intent = Intent(this, RegisterActivity::class.java)
-            startActivity(intent)
-        }
-
-    }
-
-    private fun getMyData() {
-        val retrofitBuilder = Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(Constants.BASE_URL)
-            .build().create(ContactsService::class.java)
-
-        val retrofitData = retrofitBuilder.getData()
-
-        retrofitData.enqueue(object : Callback<List<ContactItem>?> {
-            override fun onResponse(
-                call: Call<List<ContactItem>?>,
-                response: Response<List<ContactItem>?>
-            ) {
-                val responseBody = response.body()!!
-                val myStringBuilder = StringBuilder()
-
-                for(myData in responseBody){
-                    myStringBuilder.append(myData.userName)
-                    myStringBuilder.append("\n")
+        navView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_home -> {
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
                 }
-
-                txtId = findViewById(R.id.txtId)
-                txtId.text = myStringBuilder
+                R.id.nav_settings -> {
+                    Toast.makeText(applicationContext, "Settings", Toast.LENGTH_SHORT).show()
+                }
+                R.id.nav_login -> {
+                    val intent = Intent(this, LoginActivity::class.java)
+                    startActivity(intent)
+                }
+                R.id.nav_register -> {
+                    val intent = Intent(this, RegisterActivity::class.java)
+                    startActivity(intent)
+                }
+                R.id.nav_profile -> {
+                    val intent = Intent(this, RegisterActivity::class.java)
+                    startActivity(intent)
+                }
+                R.id.nav_share -> {
+                    val intent = Intent(this, LoginActivity::class.java)
+                    startActivity(intent)
+                }
+                R.id.nav_rate -> {
+                    Toast.makeText(applicationContext, "Rate", Toast.LENGTH_SHORT).show()
+                }
+                R.id.nav_logOut -> {
+                    val sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                    val editor = sharedPrefs.edit()
+                    editor.remove("USERNAME")
+                    editor.apply()
+                    twUserName.text = "gost"
+                    val intent = Intent(this@MainActivity, LoginActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
             }
+            true
+        }
 
-            override fun onFailure(call: Call<List<ContactItem>?>, t: Throwable) {
-                Log.d("MainActivity", "onFailure: "+t.message)
-            }
-        })
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
+        if(toggle.onOptionsItemSelected(item)){
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
 }

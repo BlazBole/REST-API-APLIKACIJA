@@ -56,4 +56,5 @@ dependencies {
     implementation(libs.okHttp)
     implementation(libs.lottie)
     implementation(libs.phone)
+    implementation(libs.nav)
 }

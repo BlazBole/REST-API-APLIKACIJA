@@ -122,8 +122,9 @@
                 android:drawablePadding="10dp"
                 android:drawableTint="@color/black"
                 android:hint="Uporabniško ime*"
+                android:maxLength="15"
                 android:paddingStart="10dp"
-                android:maxLength="15"/>
+                android:textColor="#000000" />
 
             <EditText
                 android:id="@+id/etEmail"
@@ -138,7 +139,8 @@
                 android:drawableTint="@color/black"
                 android:hint="Email*"
                 android:inputType="textEmailAddress"
-                android:paddingStart="10dp" />
+                android:paddingStart="10dp"
+                android:textColor="#000000" />
 
             <EditText
                 android:id="@+id/etPassword"
@@ -153,7 +155,8 @@
                 android:drawableTint="@color/black"
                 android:hint="Geslo*"
                 android:inputType="textPassword"
-                android:paddingStart="10dp" />
+                android:paddingStart="10dp"
+                android:textColor="#000000" />
 
             <EditText
                 android:id="@+id/etPhone"
@@ -163,13 +166,14 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
                 android:background="@drawable/edit_text_background"
+                android:digits="0123456789"
                 android:drawableStart="@drawable/outline_local_phone_24"
                 android:drawablePadding="10dp"
                 android:drawableTint="@color/black"
                 android:hint="Telefon"
                 android:inputType="number"
-                android:digits="0123456789"
-                android:paddingStart="10dp" />
+                android:paddingStart="10dp"
+                android:textColor="#000000" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnRegister"
