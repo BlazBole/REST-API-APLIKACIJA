@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -12,7 +13,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.myapiapp.databinding.ActivityMain2Binding
 import com.example.myapiapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -34,13 +34,17 @@ class MainActivity : AppCompatActivity() {
         toggle.syncState()
 
         val navHeaderView = navView.getHeaderView(0)
-
         // Pridobitev TextView-ja z ID-jem twUserName znotraj nav-headerja
         val twUserName = navHeaderView.findViewById<TextView>(R.id.twUserName)
 
         // Tukaj lahko nastavite uporabniško ime na pridobljen TextView
         val sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val username = sharedPrefs.getString("USERNAME","")
+
+        navHeaderView.findViewById<ImageView>(R.id.editProfileIcon).setOnClickListener(){
+            val intent = Intent(this, ProfileActivity::class.java)
+            startActivity(intent)
+        }
 
 // Preverite, ali je uporabnik prijavljen
         if (username.isNullOrEmpty()) {
@@ -75,7 +79,7 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
                 R.id.nav_profile -> {
-                    val intent = Intent(this, RegisterActivity::class.java)
+                    val intent = Intent(this, ProfileActivity::class.java)
                     startActivity(intent)
                 }
                 R.id.nav_share -> {
