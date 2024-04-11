@@ -57,4 +57,6 @@ dependencies {
     implementation(libs.lottie)
     implementation(libs.phone)
     implementation(libs.nav)
+    implementation(libs.navbottom)
+    implementation(libs.barcode)
 }
