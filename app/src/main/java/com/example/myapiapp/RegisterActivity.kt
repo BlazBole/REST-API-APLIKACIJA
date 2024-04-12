@@ -87,7 +87,7 @@ class RegisterActivity : AppCompatActivity() {
             val phone = binding.etPhone.text.toString().trim()
 
             if (username.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()) {
-                addUser(username, email, password, phone, this)
+                addUser(username, email, password, phone, Constants.DEFAULT_PROFILE_IMAGE, this)
             } else {
                 Toast.makeText(this, "Izpolnite obvezna vnosna polja", Toast.LENGTH_SHORT).show()
             }
@@ -108,7 +108,7 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun addUser(username: String, email: String, password: String, phone: String, context: Context) {
+    private fun addUser(username: String, email: String, password: String, phone: String, image: String, context: Context) {
         val retrofitBuilder = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(Constants.BASE_URL)
@@ -131,7 +131,7 @@ class RegisterActivity : AppCompatActivity() {
                                 Log.d("RegisterActivity", "User with username $username already exists: $existingUser")
                                 Toast.makeText(context, "Uporabniško ime že obstaja", Toast.LENGTH_SHORT).show()
                             } else {
-                                val newUser = ContactItem(id = null, username, email, password, phone)
+                                val newUser = ContactItem(userId = null, username, email, password, phone, image)
                                 val addUserCall = retrofitBuilder.addUser(newUser)
 
                                 addUserCall.enqueue(object : Callback<ContactItem> {

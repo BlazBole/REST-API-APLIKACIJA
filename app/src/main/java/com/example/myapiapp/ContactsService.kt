@@ -1,11 +1,14 @@
 package com.example.myapiapp
 import android.view.textclassifier.ConversationActions.Request
+import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface ContactsService {
@@ -25,4 +28,9 @@ interface ContactsService {
     @POST("api/Users/login")
     fun loginUser(@Body loginRequest: ContactItem): Call<ResponseBody>
 
+    @PUT("api/Users/{id}")
+    fun updateUser(@Path("id") id: Int, @Body updateUserRequest: ContactItem): Call<Void>
+
+
+//UPDATE TODO
 }

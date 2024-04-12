@@ -39,15 +39,18 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <ImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/imageView"
-                        android:layout_width="153dp"
-                        android:layout_height="137dp"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:scaleType="centerCrop"
                         android:layout_marginTop="50dp"
+                        android:src="@drawable/profile"
+                        android:background="@drawable/circle_backround"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/profile" />
+                        app:layout_constraintTop_toTopOf="parent" />
+
 
                     <TextView
                         android:id="@+id/twProfileUserName"
@@ -301,26 +304,29 @@
                             android:layout_margin="10dp"
                             android:orientation="horizontal">
 
+
                             <TextView
                                 android:id="@+id/twEditProfileImageTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:layout_marginTop="12dp"
-                                android:text="Slika profila:"
+                                android:text="Uredi sliko profila:"
                                 android:textColor="#182693"
                                 android:textSize="18sp" />
 
-                            <ImageView
+                            <de.hdodenhof.circleimageview.CircleImageView
                                 android:id="@+id/ivEditProfileImage"
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
-                                android:layout_weight="1"
+                                android:scaleType="centerCrop"
                                 android:clickable="true"
+                                android:layout_weight="1"
                                 android:contentDescription="Slika profila"
                                 android:focusable="true"
-                                android:scaleType="fitCenter"
                                 android:src="@drawable/profile" />
+
+
 
 
                         </LinearLayout>

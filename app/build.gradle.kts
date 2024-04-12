@@ -59,4 +59,5 @@ dependencies {
     implementation(libs.nav)
     implementation(libs.navbottom)
     implementation(libs.barcode)
+    implementation(libs.circlebg)
 }

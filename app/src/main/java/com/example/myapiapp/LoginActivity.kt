@@ -63,11 +63,16 @@ class LoginActivity : AppCompatActivity() {
             val password = binding.etPassword.text.toString().trim()
 
             if (email.isNotEmpty() && password.isNotEmpty()) {
-                val loginRequest = ContactItem(null, "", email, password, "") // Ustvarite LoginRequest objekt
+                val loginRequest = ContactItem(null, "", email, password, "", "") // Ustvarite LoginRequest objekt
                 loginUser(loginRequest)
             } else {
                 Toast.makeText(this, "Izpolnite obvezna vnosna polja", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        binding.twToRegister.setOnClickListener(){
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
         }
 
         binding.textView2.setOnClickListener(){
