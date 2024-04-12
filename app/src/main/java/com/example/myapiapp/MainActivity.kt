@@ -20,18 +20,28 @@ import com.google.zxing.integration.android.IntentIntegrator
 import android.Manifest
 import android.graphics.BitmapFactory
 import android.util.Base64
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.zxing.integration.android.IntentResult
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.Date
+import android.app.AlertDialog
+import android.content.DialogInterface
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), RecyclerViewInterface {
 
     lateinit var binding: ActivityMainBinding
     lateinit var toggle : ActionBarDrawerToggle
     private var user: ContactItem? = null // Definicija uporabnika kot razredne spremenljivke
+
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: MyAdapter
+    private lateinit var layoutManager: LinearLayoutManager
+    private lateinit var inventoryList: List<InventoryItem>
 
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +49,17 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
+
+        inventoryList = getInventoryList()
+
+
+        recyclerView = findViewById(R.id.recyclerView)
+        layoutManager = LinearLayoutManager(this)
+        adapter = MyAdapter(inventoryList, this)
+
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = adapter
+
 
         val drawerLayout = binding.drawerLayout
         val navView = binding.navView
@@ -169,9 +190,12 @@ class MainActivity : AppCompatActivity() {
             val result: IntentResult? =
                 IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
             if (result != null && result.contents != null) {
-                binding.textView.text = result.contents
+                //TODO
+                val barcodeContent = result.contents
                 val intent = Intent(this@MainActivity, InputActivity::class.java)
+                intent.putExtra("barcodeContent", barcodeContent) // Dodajanje podatkov v intent
                 startActivity(intent)
+
             } else {
                 Toast.makeText(this, "Skeniranje preklicano ali ni bilo mogoče prebrati QR kode", Toast.LENGTH_SHORT).show()
             }
@@ -188,5 +212,39 @@ class MainActivity : AppCompatActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun getInventoryList(): List<InventoryItem> {
+        // Tukaj pridobite seznam inventarja iz vašega vira podatkov
+        // Na primer, lahko ga pridobite iz baze podatkov, API-ja ali drugih virov
+        // V tem primeru ga bomo samo trdo kodirali za prikaz
+
+        val itemList = ArrayList<InventoryItem>()
+        itemList.add(InventoryItem(1, 123, "Inventar 1", Date(), 1, 1))
+        itemList.add(InventoryItem(2, 456, "Inventar 2", Date(), 2, 2))
+        itemList.add(InventoryItem(3, 789, "Inventar 3", Date(), 3, 3))
+
+        return itemList
+    }
+
+    override fun onItemClick(position: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onItemLongClick(position: Int) {
+        // Ob dolgem kliku na element RecyclerView prikažemo dialog za potrditev brisanja
+        val alertDialogBuilder = AlertDialog.Builder(this)
+        alertDialogBuilder.setTitle("Potrditev brisanja")
+        alertDialogBuilder.setMessage("Ste prepričani, da želite izbrisati ta inventar?")
+        alertDialogBuilder.setPositiveButton("Da") { dialog, which ->
+            // Izbris itema iz seznama in obvestimo adapter
+            inventoryList = inventoryList.filterIndexed { index, _ -> index != position }
+            adapter.notifyDataSetChanged()
+            dialog.dismiss()
+        }
+        alertDialogBuilder.setNegativeButton("Ne") { dialog, which ->
+            dialog.dismiss()
+        }
+        alertDialogBuilder.create().show()
     }
 }

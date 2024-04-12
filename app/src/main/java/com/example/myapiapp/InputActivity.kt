@@ -2,6 +2,7 @@ package com.example.myapiapp
 
 import android.os.Bundle
 import android.os.Handler
+import android.text.Editable
 import android.view.animation.AnimationUtils
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +12,8 @@ import com.example.myapiapp.databinding.ActivityInputBinding
 import com.example.myapiapp.databinding.ActivityLoginBinding
 import android.view.MotionEvent
 import android.view.View
+import java.text.SimpleDateFormat
+import java.util.*
 
 class InputActivity : AppCompatActivity() {
     lateinit var binding: ActivityInputBinding
@@ -37,9 +40,17 @@ class InputActivity : AppCompatActivity() {
         }
 
         handler.postDelayed(runnable,1000)
+
+        val barcodeContent = intent.getStringExtra("barcodeContent")
+        binding.etInvNumber.text = Editable.Factory.getInstance().newEditable(barcodeContent)
+
+        val currentDate = Calendar.getInstance().time
+        val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+        val formattedDate = dateFormat.format(currentDate)
+        val editableText = Editable.Factory.getInstance().newEditable(formattedDate)
+        binding.etInputDate.text = editableText
     }
-
-
+    
     private fun hideSystemUI() {
         val decorView = window.decorView
         decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
