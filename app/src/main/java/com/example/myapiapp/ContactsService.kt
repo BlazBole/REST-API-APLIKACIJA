@@ -31,6 +31,10 @@ interface ContactsService {
     @PUT("api/Users/{id}")
     fun updateUser(@Path("id") id: Int, @Body updateUserRequest: ContactItem): Call<Void>
 
+    @POST("api/Users/Inventory/AddToInventory")
+    fun addToInventory(@Body addToInventoryRequest: InventoryItem): Call<InventoryItem>
 
-//UPDATE TODO
+    @GET("api/Users/Inventory/GetInventory")
+    fun getInventory(): Call<List<InventoryItem>>
+
 }

@@ -44,7 +44,7 @@ class MyAdapter(private val items: List<InventoryItem>, private val listener: Re
 
         holder.tvGlava.text = item.inventoryName
         holder.tvEmail.text = "Številka inventarja: ${item.inventoryNumber}"
-        holder.tvDatum.text = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(item.entryDate)
+        holder.tvDatum.text = item.entryDate
         // Dodajte ostale podatke, če jih imate
 
         // Tukaj lahko nastavite dodatne elemente, kot so slike, če jih imate

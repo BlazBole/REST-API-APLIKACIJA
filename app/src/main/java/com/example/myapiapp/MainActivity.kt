@@ -31,12 +31,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.Date
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.util.Log
 
 class MainActivity : AppCompatActivity(), RecyclerViewInterface {
 
     lateinit var binding: ActivityMainBinding
     lateinit var toggle : ActionBarDrawerToggle
-    private var user: ContactItem? = null // Definicija uporabnika kot razredne spremenljivke
+    private var user: ContactItem? = null
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: MyAdapter
@@ -53,12 +54,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewInterface {
         inventoryList = getInventoryList()
 
 
-        recyclerView = findViewById(R.id.recyclerView)
-        layoutManager = LinearLayoutManager(this)
-        adapter = MyAdapter(inventoryList, this)
-
-        recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = adapter
+        fetchInventoryFromApi()
 
 
         val drawerLayout = binding.drawerLayout
@@ -220,9 +216,9 @@ class MainActivity : AppCompatActivity(), RecyclerViewInterface {
         // V tem primeru ga bomo samo trdo kodirali za prikaz
 
         val itemList = ArrayList<InventoryItem>()
-        itemList.add(InventoryItem(1, 123, "Inventar 1", Date(), 1, 1))
-        itemList.add(InventoryItem(2, 456, "Inventar 2", Date(), 2, 2))
-        itemList.add(InventoryItem(3, 789, "Inventar 3", Date(), 3, 3))
+        itemList.add(InventoryItem(1, "123", "Inventar 1", "Date", "1", 1))
+        itemList.add(InventoryItem(2, "456", "Inventar 2", "Date", "2", 2))
+        itemList.add(InventoryItem(3, "789", "Inventar 3", "Date", "3", 3))
 
         return itemList
     }
@@ -247,4 +243,43 @@ class MainActivity : AppCompatActivity(), RecyclerViewInterface {
         }
         alertDialogBuilder.create().show()
     }
+
+    fun fetchInventoryFromApi() {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(ContactsService::class.java)
+        val call = service.getInventory()
+
+        call.enqueue(object : Callback<List<InventoryItem>> {
+            override fun onResponse(call: Call<List<InventoryItem>>, response: Response<List<InventoryItem>>) {
+                if (response.isSuccessful) {
+                    val inventoryList = response.body() ?: emptyList()
+                    setupRecyclerView(inventoryList)
+                } else {
+                    // Napaka pri pridobivanju inventarja
+                    Toast.makeText(applicationContext, "Napaka pri pridobivanju inventarja", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<List<InventoryItem>>, t: Throwable) {
+                // Napaka pri klicanju REST API-ja
+                Log.e("MainActivity", "Error: ${t.message}")
+                Toast.makeText(applicationContext, "Napaka pri izvajanju zahtevka", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun setupRecyclerView(inventoryList: List<InventoryItem>) {
+        recyclerView = findViewById(R.id.recyclerView)
+        layoutManager = LinearLayoutManager(this)
+        adapter = MyAdapter(inventoryList, this)
+
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = adapter
+    }
+
+
 }
