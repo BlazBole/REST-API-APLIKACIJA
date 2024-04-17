@@ -1,5 +1,6 @@
 package com.example.myapiapp
 
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,8 +14,8 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MyAdapter(private val items: List<InventoryItem>, private val listener: RecyclerViewInterface) :
-    RecyclerView.Adapter<MyAdapter.ViewHolder>() {
+class MyAdapterFilter(private val items: List<InventoryItem>, private val listener: UserInputActivity) :
+    RecyclerView.Adapter<MyAdapterFilter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener, View.OnLongClickListener {
         val tvNumber: TextView = itemView.findViewById(R.id.tvInNumber)
@@ -44,6 +45,7 @@ class MyAdapter(private val items: List<InventoryItem>, private val listener: Re
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
         val item = items[position]
 
         holder.tvNumber.text = item.inventoryNumber
@@ -51,7 +53,6 @@ class MyAdapter(private val items: List<InventoryItem>, private val listener: Re
         holder.tvDate.text = item.entryDate
         holder.tvLocation.text = "Številka pisarne: ${item.locationRoom}"
 
-        // Dodatek: Pridobitev uporabniškega imena iz API-ja na podlagi UserId
         val retrofit = Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -64,7 +65,7 @@ class MyAdapter(private val items: List<InventoryItem>, private val listener: Re
             override fun onResponse(call: Call<ContactItem>, response: Response<ContactItem>) {
                 if (response.isSuccessful) {
                     val contactItem = response.body()
-                    val username = contactItem?.email ?: "Unknown" // V primeru, da ni bilo mogoče pridobiti uporabniškega imena
+                    val username = contactItem?.email ?: "Unknown"
                     holder.tvUser.text = username
                 } else {
                     // Napaka pri pridobivanju uporabniškega imena
@@ -81,7 +82,6 @@ class MyAdapter(private val items: List<InventoryItem>, private val listener: Re
             }
         })
     }
-
 
     override fun getItemCount(): Int {
         return items.size

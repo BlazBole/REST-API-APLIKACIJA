@@ -1,6 +1,8 @@
 package com.example.myapiapp
 
 import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
@@ -15,23 +17,37 @@ import com.example.myapiapp.databinding.ActivityLoginBinding
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class InputActivity : AppCompatActivity() {
     lateinit var binding: ActivityInputBinding
     var userId: Int? = null
+    lateinit var formattedDate: String
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityInputBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
         //hideSystemUI();
+
+        val currentDate = LocalDate.now()
+
+        // Pretvorba trenutnega datuma v želeni format
+        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+        formattedDate = currentDate.format(formatter)
+
+        // Nastavitev vrednosti EditText z današnjim datumom
+        binding.etInputDate.text = Editable.Factory.getInstance().newEditable(formattedDate)
 
         val sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val username = sharedPrefs.getString("USERNAME","")
@@ -85,13 +101,18 @@ class InputActivity : AppCompatActivity() {
         binding.btnAddInventory.setOnClickListener(){
             val inventoryNumber = binding.etInvNumber.text.toString().trim()
             val inventoryName  = binding.etInvTitle.text.toString().trim()
-            val entryDate  = binding.etInputDate.text.toString().trim()
+
+            // Nastavitev vrednosti EditText z današnjim datumom
+            binding.etInputDate.text = Editable.Factory.getInstance().newEditable(formattedDate)
             val locationRoom = binding.etLocation.text.toString().trim()
 
             val addToInventoryRequest = InventoryItem(
-                null, inventoryNumber, inventoryName, entryDate, locationRoom, userId!!
+                null, inventoryNumber, inventoryName, formattedDate, locationRoom, userId!!
             )
             addToInventory(addToInventoryRequest)
+
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
         }
     }
 

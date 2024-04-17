@@ -25,6 +25,9 @@ interface ContactsService {
     @GET("api/Users/username/{username}")
     fun getUserByUsername(@Path("username") username: String): Call<ContactItem>
 
+    @GET("api/Users/usernameById/{userId}")
+    fun getUsernameByUserId(@Path("userId") userId: Int): Call<ContactItem>
+
     @POST("api/Users/login")
     fun loginUser(@Body loginRequest: ContactItem): Call<ResponseBody>
 
@@ -37,4 +40,6 @@ interface ContactsService {
     @GET("api/Users/Inventory/GetInventory")
     fun getInventory(): Call<List<InventoryItem>>
 
+    @GET("api/Users/Inventory/GetInventoryByUser/{userId}")
+    fun getInventoryByUser(@Path("userId") userId: Int): Call<List<InventoryItem>>
 }

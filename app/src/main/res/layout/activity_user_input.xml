@@ -6,15 +6,12 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".UserInputActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- Placeholder textview for Activity 1 -->
-
-        <!-- Floating Action Button for Add -->
         <LinearLayout
             android:id="@+id/top_linearLayout"
             android:layout_width="match_parent"
@@ -35,7 +32,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="15dp"
                 android:gravity="center"
-                android:text="Pregled inventarja"
+                android:text="Moj inventar"
                 android:textColor="@android:color/white"
                 android:textSize="25sp"
                 android:shadowColor="#80000000"
@@ -55,15 +52,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnAddScan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:backgroundTint="@color/primary"
-            android:src="@drawable/baseline_add_a_photo_24"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
@@ -71,7 +59,6 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.81" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

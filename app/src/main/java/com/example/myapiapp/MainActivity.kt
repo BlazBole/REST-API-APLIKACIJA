@@ -51,11 +51,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewInterface {
         enableEdgeToEdge()
         setContentView(binding.root)
 
-        inventoryList = getInventoryList()
-
-
         fetchInventoryFromApi()
-
 
         val drawerLayout = binding.drawerLayout
         val navView = binding.navView
@@ -210,21 +206,19 @@ class MainActivity : AppCompatActivity(), RecyclerViewInterface {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun getInventoryList(): List<InventoryItem> {
-        // Tukaj pridobite seznam inventarja iz vašega vira podatkov
-        // Na primer, lahko ga pridobite iz baze podatkov, API-ja ali drugih virov
-        // V tem primeru ga bomo samo trdo kodirali za prikaz
-
-        val itemList = ArrayList<InventoryItem>()
-        itemList.add(InventoryItem(1, "123", "Inventar 1", "Date", "1", 1))
-        itemList.add(InventoryItem(2, "456", "Inventar 2", "Date", "2", 2))
-        itemList.add(InventoryItem(3, "789", "Inventar 3", "Date", "3", 3))
-
-        return itemList
-    }
-
     override fun onItemClick(position: Int) {
-        TODO("Not yet implemented")
+        val intent = Intent(this, InventoryDescriptionActivity::class.java)
+        val INVNUMBER = binding.recyclerView.findViewHolderForAdapterPosition(position)?.itemView?.findViewById<TextView>(R.id.tvInNumber)?.text.toString()
+        val INVTITLE = binding.recyclerView.findViewHolderForAdapterPosition(position)?.itemView?.findViewById<TextView>(R.id.tvInTitle)?.text.toString()
+        val INVLOCATION = binding.recyclerView.findViewHolderForAdapterPosition(position)?.itemView?.findViewById<TextView>(R.id.tvInLocation)?.text.toString()
+        val INVINPUTDATE = binding.recyclerView.findViewHolderForAdapterPosition(position)?.itemView?.findViewById<TextView>(R.id.tvInInputDate)?.text.toString()
+
+        // Pass the text as an extra to the intent
+        intent.putExtra("INVNUMBER", INVNUMBER)
+        intent.putExtra("INVTITLE", INVTITLE)
+        intent.putExtra("INVLOCATION", INVLOCATION)
+        intent.putExtra("INVINPUTDATE", INVINPUTDATE)
+        startActivity(intent)
     }
 
     override fun onItemLongClick(position: Int) {
@@ -280,6 +274,4 @@ class MainActivity : AppCompatActivity(), RecyclerViewInterface {
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
     }
-
-
 }

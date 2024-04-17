@@ -155,8 +155,9 @@
                     android:hint="Datum vnosa"
                     android:paddingStart="10dp"
                     android:textColor="#000000"
-
-        />
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:clickable="false" />
 
                 <EditText
                     android:id="@+id/etLocation"
@@ -170,7 +171,7 @@
                     android:drawableStart="@drawable/outline_door_front_24"
                     android:drawablePadding="10dp"
                     android:drawableTint="@color/black"
-                    android:hint="Lokacija"
+                    android:hint="Številka pisarne"
                     android:inputType="number"
                     android:paddingStart="10dp"
                     android:textColor="#000000" />
@@ -207,7 +208,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:text="Inventar predstavlja opremo v pisarnah. Vsaka oprema ima svojo edinstveno številko (barcode), hkrati pa je povezana z določeno pisarno preko lokacije, kjer se nahaja"
+                android:text="Inventar predstavlja opremo v pisarnah. Vsaka oprema ima svojo edinstveno številko (barcode), hkrati pa je povezana z določeno pisarno preko lokacije, kjer se nahaja."
                 android:textColor="@color/md_theme_light_outline"
                 android:textSize="13dp"
                 app:layout_constraintBottom_toBottomOf="parent"

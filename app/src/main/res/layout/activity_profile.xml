@@ -125,14 +125,14 @@
                                     android:background="@drawable/circle_backround">
 
                                     <ImageView
-                                        android:id="@+id/imageViewid3"
+                                        android:id="@+id/iwAddToInventory"
                                         android:layout_width="42dp"
                                         android:layout_height="33dp"
                                         app:layout_constraintBottom_toBottomOf="parent"
                                         app:layout_constraintEnd_toEndOf="parent"
                                         app:layout_constraintStart_toStartOf="parent"
                                         app:layout_constraintTop_toTopOf="parent"
-                                        app:srcCompat="@drawable/wallet" />
+                                        app:srcCompat="@drawable/checklist" />
                                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                                 <TextView
@@ -140,7 +140,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginBottom="8dp"
-                                    android:text="Plačila"
+                                    android:text="Vnos"
                                     android:textAlignment="center"
                                     android:textColor="#000000"
                                     android:textSize="13sp"
@@ -164,14 +164,14 @@
                                     android:background="@drawable/circle_backround">
 
                                     <ImageView
-                                        android:id="@+id/imageViewidd3"
+                                        android:id="@+id/iwMyInventory"
                                         android:layout_width="42dp"
                                         android:layout_height="33dp"
                                         app:layout_constraintBottom_toBottomOf="parent"
                                         app:layout_constraintEnd_toEndOf="parent"
                                         app:layout_constraintStart_toStartOf="parent"
                                         app:layout_constraintTop_toTopOf="parent"
-                                        app:srcCompat="@drawable/settings" />
+                                        app:srcCompat="@drawable/input" />
                                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                                 <TextView
@@ -179,7 +179,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginBottom="8dp"
-                                    android:text="Nastavitve"
+                                    android:text="Moj inventar"
                                     android:textAlignment="center"
                                     android:textColor="#000000"
                                     android:textSize="13sp"
@@ -203,14 +203,14 @@
                                     android:background="@drawable/circle_backround">
 
                                     <ImageView
-                                        android:id="@+id/imageView3"
+                                        android:id="@+id/iwLogOut"
                                         android:layout_width="42dp"
                                         android:layout_height="33dp"
                                         app:layout_constraintBottom_toBottomOf="parent"
                                         app:layout_constraintEnd_toEndOf="parent"
                                         app:layout_constraintStart_toStartOf="parent"
                                         app:layout_constraintTop_toTopOf="parent"
-                                        app:srcCompat="@drawable/notification" />
+                                        app:srcCompat="@drawable/logout" />
                                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                                 <TextView
@@ -218,7 +218,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginBottom="8dp"
-                                    android:text="Obvestila"
+                                    android:text="Odjava"
                                     android:textAlignment="center"
                                     android:textColor="#000000"
                                     android:textSize="13sp"
