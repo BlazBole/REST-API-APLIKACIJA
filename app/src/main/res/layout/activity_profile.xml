@@ -326,9 +326,6 @@
                                 android:focusable="true"
                                 android:src="@drawable/profile" />
 
-
-
-
                         </LinearLayout>
 
                     </LinearLayout>

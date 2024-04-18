@@ -33,17 +33,17 @@
     </item>
 
     <item
-        android:title="Komunikacija">
+        android:title="Inventar">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/baseline_share_24"
-                android:title="Deli"/>
+                android:id="@+id/nav_myInventory"
+                android:icon="@drawable/baseline_format_list_bulleted_24"
+                android:title="Moj inventar"/>
 
             <item
-                android:id="@+id/nav_rate"
-                android:icon="@drawable/baseline_rate_review_24"
-                android:title="Ocene"/>
+                android:id="@+id/nav_addToInventory"
+                android:icon="@drawable/baseline_format_list_bulleted_add_24"
+                android:title="Dodaj inventar"/>
         </menu>
     </item>
 

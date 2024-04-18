@@ -2,10 +2,12 @@ package com.example.myapiapp
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -41,7 +43,20 @@ class UserInputActivity : AppCompatActivity(), RecyclerViewInterface {
     }
 
     override fun onItemClick(position: Int) {
-        TODO("Not yet implemented")
+        val intent = Intent(this, InventoryDescriptionActivity::class.java)
+        val INVNUMBER = binding.recyclerView.findViewHolderForAdapterPosition(position)?.itemView?.findViewById<TextView>(R.id.tvInNumber)?.text.toString()
+        val INVTITLE = binding.recyclerView.findViewHolderForAdapterPosition(position)?.itemView?.findViewById<TextView>(R.id.tvInTitle)?.text.toString()
+        val INVLOCATION = binding.recyclerView.findViewHolderForAdapterPosition(position)?.itemView?.findViewById<TextView>(R.id.tvInLocation)?.text.toString()
+        val INVINPUTDATE = binding.recyclerView.findViewHolderForAdapterPosition(position)?.itemView?.findViewById<TextView>(R.id.tvInInputDate)?.text.toString()
+        val USER = binding.recyclerView.findViewHolderForAdapterPosition(position)?.itemView?.findViewById<TextView>(R.id.tvUser)?.text.toString()
+
+        // Pass the text as an extra to the intent
+        intent.putExtra("INVNUMBER", INVNUMBER)
+        intent.putExtra("INVTITLE", INVTITLE)
+        intent.putExtra("INVLOCATION", INVLOCATION)
+        intent.putExtra("INVINPUTDATE", INVINPUTDATE)
+        intent.putExtra("USER", USER)
+        startActivity(intent)
     }
 
     override fun onItemLongClick(position: Int) {

@@ -49,7 +49,7 @@ class MyAdapter(private val items: List<InventoryItem>, private val listener: Re
         holder.tvNumber.text = item.inventoryNumber
         holder.tvTitle.text = item.inventoryName
         holder.tvDate.text = item.entryDate
-        holder.tvLocation.text = "Številka pisarne: ${item.locationRoom}"
+        holder.tvLocation.text = item.locationRoom
 
         // Dodatek: Pridobitev uporabniškega imena iz API-ja na podlagi UserId
         val retrofit = Retrofit.Builder()

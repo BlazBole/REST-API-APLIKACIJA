@@ -137,12 +137,24 @@ class MainActivity : AppCompatActivity(), RecyclerViewInterface {
                     val intent = Intent(this, ProfileActivity::class.java)
                     startActivity(intent)
                 }
-                R.id.nav_share -> {
-                    val intent = Intent(this, LoginActivity::class.java)
+                R.id.nav_myInventory -> {
+                    val intent = Intent(this, UserInputActivity::class.java)
                     startActivity(intent)
                 }
-                R.id.nav_rate -> {
-                    Toast.makeText(applicationContext, "Rate", Toast.LENGTH_SHORT).show()
+                R.id.nav_addToInventory -> {
+                    if (ActivityCompat.checkSelfPermission(
+                            this,
+                            Manifest.permission.CAMERA
+                        ) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        ActivityCompat.requestPermissions(
+                            this,
+                            arrayOf(Manifest.permission.CAMERA),
+                            CAMERA_PERMISSION_REQUEST_CODE
+                        )
+                    } else {
+                        IntentIntegrator(this).initiateScan()
+                    }
                 }
                 R.id.nav_logOut -> {
                     val sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
@@ -212,12 +224,14 @@ class MainActivity : AppCompatActivity(), RecyclerViewInterface {
         val INVTITLE = binding.recyclerView.findViewHolderForAdapterPosition(position)?.itemView?.findViewById<TextView>(R.id.tvInTitle)?.text.toString()
         val INVLOCATION = binding.recyclerView.findViewHolderForAdapterPosition(position)?.itemView?.findViewById<TextView>(R.id.tvInLocation)?.text.toString()
         val INVINPUTDATE = binding.recyclerView.findViewHolderForAdapterPosition(position)?.itemView?.findViewById<TextView>(R.id.tvInInputDate)?.text.toString()
+        val USER = binding.recyclerView.findViewHolderForAdapterPosition(position)?.itemView?.findViewById<TextView>(R.id.tvUser)?.text.toString()
 
         // Pass the text as an extra to the intent
         intent.putExtra("INVNUMBER", INVNUMBER)
         intent.putExtra("INVTITLE", INVTITLE)
         intent.putExtra("INVLOCATION", INVLOCATION)
         intent.putExtra("INVINPUTDATE", INVINPUTDATE)
+        intent.putExtra("USER", USER)
         startActivity(intent)
     }
 
