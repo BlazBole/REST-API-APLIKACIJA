@@ -34,7 +34,7 @@ class MyAdapterFilter(private val items: List<InventoryItem>, private val listen
         }
 
         override fun onLongClick(v: View?): Boolean {
-            listener.onItemLongClick(adapterPosition)
+            listener.onItemLongClick(layoutPosition)
             return true
         }
     }
@@ -85,5 +85,9 @@ class MyAdapterFilter(private val items: List<InventoryItem>, private val listen
 
     override fun getItemCount(): Int {
         return items.size
+    }
+
+    fun getItem(position: Int): InventoryItem {
+        return items[position]
     }
 }

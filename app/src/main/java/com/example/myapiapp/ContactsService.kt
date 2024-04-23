@@ -5,6 +5,7 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -42,4 +43,7 @@ interface ContactsService {
 
     @GET("api/Users/Inventory/GetInventoryByUser/{userId}")
     fun getInventoryByUser(@Path("userId") userId: Int): Call<List<InventoryItem>>
+
+    @DELETE("api/Users/Inventory/DeleteInventory/{id}")
+    fun deleteInventory(@Path("id") id: Int): Call<Void>
 }

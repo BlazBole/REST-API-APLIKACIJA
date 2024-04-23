@@ -26,8 +26,8 @@ class UserInputActivity : AppCompatActivity(), RecyclerViewInterface {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: MyAdapterFilter
     private lateinit var layoutManager: LinearLayoutManager
-    private lateinit var inventoryList: List<InventoryItem>
     private lateinit var username: String
+    private lateinit var inventoryList: List<InventoryItem>
 
     private var user: ContactItem? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,9 +65,9 @@ class UserInputActivity : AppCompatActivity(), RecyclerViewInterface {
         alertDialogBuilder.setTitle("Potrditev brisanja")
         alertDialogBuilder.setMessage("Ste prepričani, da želite izbrisati ta inventar?")
         alertDialogBuilder.setPositiveButton("Da") { dialog, which ->
-            // Izbris itema iz seznama in obvestimo adapter
-            inventoryList = inventoryList.filterIndexed { index, _ -> index != position }
-            adapter.notifyDataSetChanged()
+            // Izvedite brisanje inventarja
+            val inventoryItem = adapter.getItem(position) // Pridobite izbrani inventar iz adapterja
+            deleteInventory(inventoryItem)
             dialog.dismiss()
         }
         alertDialogBuilder.setNegativeButton("Ne") { dialog, which ->
@@ -75,6 +75,40 @@ class UserInputActivity : AppCompatActivity(), RecyclerViewInterface {
         }
         alertDialogBuilder.create().show()
     }
+
+    private fun deleteInventory(inventoryItem: InventoryItem) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(ContactsService::class.java)
+        val call = service.deleteInventory(inventoryItem.id!!)
+
+        call.enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    // Uspešno izbrisano
+                    Toast.makeText(applicationContext, "Inventar je bil uspešno izbrisan.", Toast.LENGTH_SHORT).show()
+                    // Osvežite seznam inventarja
+                    fetchInventoryFromApi()
+                } else {
+                    // Napaka pri brisanju inventarja
+                    Toast.makeText(applicationContext, "Napaka pri izbrisu inventarja.", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                // Napaka pri izvedbi API klica
+                Toast.makeText(applicationContext, "Napaka pri izvedbi API klica.", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+
+
+
+
 
     fun fetchInventoryFromApi() {
         val retrofit = Retrofit.Builder()

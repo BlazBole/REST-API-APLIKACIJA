@@ -74,11 +74,9 @@ class MainActivity : AppCompatActivity(), RecyclerViewInterface {
         call.enqueue(object : Callback<ContactItem> {
             override fun onResponse(call: Call<ContactItem>, response: Response<ContactItem>) {
                 if (response.isSuccessful) {
-                    user = response.body() // Shrani uporabnika kot razredno spremenljivko
+                    user = response.body() 
 
-                    // Preverite, ali je uporabnik pravilno pridobljen iz odgovora API klica
                     if (user != null) {
-                        // Uporabite pridobljene podatke za izpolnitev polj
                         val decodedByteArray = Base64.decode(user!!.image, Base64.DEFAULT)
                         val decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.size)
                         profileImage.setImageBitmap(decodedBitmap)
@@ -122,38 +120,115 @@ class MainActivity : AppCompatActivity(), RecyclerViewInterface {
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                 }
-                R.id.nav_settings -> {
-                    Toast.makeText(applicationContext, "Settings", Toast.LENGTH_SHORT).show()
-                }
                 R.id.nav_login -> {
-                    val intent = Intent(this, LoginActivity::class.java)
-                    startActivity(intent)
+                    val sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                    val username = sharedPrefs.getString("USERNAME", "")
+
+                    if (username.isNullOrEmpty()) {
+                        val intent = Intent(this, LoginActivity::class.java)
+                        startActivity(intent)
+                    } else {
+                        val alertDialogBuilder = AlertDialog.Builder(this)
+                        alertDialogBuilder.setTitle("Obvestilo")
+                        alertDialogBuilder.setMessage("Najprej se morate odjaviti.")
+                        alertDialogBuilder.setPositiveButton("OK") { dialog, which ->
+                            dialog.dismiss()
+                        }
+                        alertDialogBuilder.create().show()
+                    }
                 }
                 R.id.nav_register -> {
-                    val intent = Intent(this, RegisterActivity::class.java)
-                    startActivity(intent)
+                    val sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                    val username = sharedPrefs.getString("USERNAME", "")
+
+                    if (username.isNullOrEmpty()) {
+                        val intent = Intent(this, RegisterActivity::class.java)
+                        startActivity(intent)
+                    } else {
+                        val alertDialogBuilder = AlertDialog.Builder(this)
+                        alertDialogBuilder.setTitle("Obvestilo")
+                        alertDialogBuilder.setMessage("Najprej se morate odjaviti.")
+                        alertDialogBuilder.setPositiveButton("OK") { dialog, which ->
+                            dialog.dismiss()
+                        }
+                        alertDialogBuilder.create().show()
+                    }
                 }
                 R.id.nav_profile -> {
-                    val intent = Intent(this, ProfileActivity::class.java)
-                    startActivity(intent)
+                    val sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                    val username = sharedPrefs.getString("USERNAME", "")
+
+                    if (username.isNullOrEmpty()) {
+                        val alertDialogBuilder = AlertDialog.Builder(this)
+                        alertDialogBuilder.setTitle("Obvestilo")
+                        alertDialogBuilder.setMessage("Najprej se morate prijaviti.")
+                        alertDialogBuilder.setPositiveButton("Prijavi se") { dialog, which ->
+                            val intent = Intent(this, LoginActivity::class.java)
+                            startActivity(intent)
+                            dialog.dismiss()
+                        }
+                        alertDialogBuilder.setNegativeButton("Prekliči") { dialog, which ->
+                            dialog.dismiss()
+                        }
+                        alertDialogBuilder.create().show()
+                    } else {
+                        val intent = Intent(this, ProfileActivity::class.java)
+                        startActivity(intent)
+                    }
                 }
                 R.id.nav_myInventory -> {
-                    val intent = Intent(this, UserInputActivity::class.java)
-                    startActivity(intent)
+                    val sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                    val username = sharedPrefs.getString("USERNAME", "")
+
+                    if (username.isNullOrEmpty()) {
+                        val alertDialogBuilder = AlertDialog.Builder(this)
+                        alertDialogBuilder.setTitle("Obvestilo")
+                        alertDialogBuilder.setMessage("Najprej se morate prijaviti.")
+                        alertDialogBuilder.setPositiveButton("Prijavi se") { dialog, which ->
+                            val intent = Intent(this, LoginActivity::class.java)
+                            startActivity(intent)
+                            dialog.dismiss()
+                        }
+                        alertDialogBuilder.setNegativeButton("Prekliči") { dialog, which ->
+                            dialog.dismiss()
+                        }
+                        alertDialogBuilder.create().show()
+                    } else {
+                        val intent = Intent(this, UserInputActivity::class.java)
+                        startActivity(intent)
+                    }
                 }
                 R.id.nav_addToInventory -> {
-                    if (ActivityCompat.checkSelfPermission(
-                            this,
-                            Manifest.permission.CAMERA
-                        ) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                        ActivityCompat.requestPermissions(
-                            this,
-                            arrayOf(Manifest.permission.CAMERA),
-                            CAMERA_PERMISSION_REQUEST_CODE
-                        )
+                    val sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                    val username = sharedPrefs.getString("USERNAME", "")
+
+                    if (username.isNullOrEmpty()) {
+                        val alertDialogBuilder = AlertDialog.Builder(this)
+                        alertDialogBuilder.setTitle("Obvestilo")
+                        alertDialogBuilder.setMessage("Najprej se morate prijaviti.")
+                        alertDialogBuilder.setPositiveButton("Prijavi se") { dialog, which ->
+                            val intent = Intent(this, LoginActivity::class.java)
+                            startActivity(intent)
+                            dialog.dismiss()
+                        }
+                        alertDialogBuilder.setNegativeButton("Prekliči") { dialog, which ->
+                            dialog.dismiss()
+                        }
+                        alertDialogBuilder.create().show()
                     } else {
-                        IntentIntegrator(this).initiateScan()
+                        if (ActivityCompat.checkSelfPermission(
+                                this,
+                                Manifest.permission.CAMERA
+                            ) != PackageManager.PERMISSION_GRANTED
+                        ) {
+                            ActivityCompat.requestPermissions(
+                                this,
+                                arrayOf(Manifest.permission.CAMERA),
+                                CAMERA_PERMISSION_REQUEST_CODE
+                            )
+                        } else {
+                            IntentIntegrator(this).initiateScan()
+                        }
                     }
                 }
                 R.id.nav_logOut -> {
@@ -284,7 +359,6 @@ class MainActivity : AppCompatActivity(), RecyclerViewInterface {
         recyclerView = findViewById(R.id.recyclerView)
         layoutManager = LinearLayoutManager(this)
         adapter = MyAdapter(inventoryList, this)
-
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
     }
