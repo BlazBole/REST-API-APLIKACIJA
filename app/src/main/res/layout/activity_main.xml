@@ -72,6 +72,29 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.81" />
 
+        <TextView
+            android:id="@+id/twToLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="Za podroben pregled elementa v seznamu,\npritisnite nanj"
+            android:textColor="@color/md_theme_light_outline"
+            android:textSize="13dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnAddScan"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btnAddScan"
+            app:layout_constraintVertical_bias="0.509" />
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/twToLogin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/baseline_info_outline_24" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -9,6 +9,7 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.util.Log
+import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.Toast
@@ -40,9 +41,15 @@ class RegisterActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        window.decorView.apply {
+            systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        }
+
         setRequiredField(binding.etUsername)
         setRequiredField(binding.etEmail)
         setRequiredField(binding.etPassword)
+        setRequiredField(binding.etPhone)
 
 
         var fade_in = AnimationUtils.loadAnimation(this, R.anim.fade_in)
@@ -86,10 +93,10 @@ class RegisterActivity : AppCompatActivity() {
             val password = binding.etPassword.text.toString().trim()
             val phone = binding.etPhone.text.toString().trim()
 
-            if (username.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()) {
+            if (username.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && phone.isNotEmpty()) {
                 addUser(username, email, password, phone, Constants.DEFAULT_PROFILE_IMAGE, this)
             } else {
-                Toast.makeText(this, "Izpolnite obvezna vnosna polja", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Izpolnite vsa vnosna polja", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -165,7 +172,6 @@ class RegisterActivity : AppCompatActivity() {
             }
         })
     }
-
 
     private fun setRequiredField(editText: EditText) {
         val hint = editText.hint ?: return

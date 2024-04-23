@@ -8,6 +8,7 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.util.Log
+import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.Toast
@@ -37,6 +38,11 @@ class LoginActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        window.decorView.apply {
+            systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        }
+
         setRequiredField(binding.etEmail)
         setRequiredField(binding.etPassword)
 
@@ -85,6 +91,11 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.btnHome.setOnClickListener(){
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
     fun loginUser(loginRequest: ContactItem) {
@@ -99,7 +110,7 @@ class LoginActivity : AppCompatActivity() {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful) {
                     val message = response.body()?.string()
-                    Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "Uspešna prijava", Toast.LENGTH_SHORT).show()
 
                     val userName = message
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)

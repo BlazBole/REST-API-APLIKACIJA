@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Base64
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -25,11 +26,13 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.ByteArrayOutputStream
+import androidx.appcompat.widget.Toolbar
+
 
 class ProfileActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityProfileBinding
-    private var user: ContactItem? = null // Definicija uporabnika kot razredne spremenljivke
+    private var user: ContactItem? = null
     private var imageUri: Uri? = null
     private val MAX_IMAGE_SIZE = 1024
 
@@ -49,11 +52,13 @@ class ProfileActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(binding.root)
 
-        // Pridobitev uporabniškega imena iz SharedPreferences
+        window.decorView.apply {
+            systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        }
+
         val sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val username = sharedPrefs.getString("USERNAME", "")
 
-        // Uporaba pridobljenega uporabniškega imena za izvedbo API klica getUserByUsername
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -65,11 +70,9 @@ class ProfileActivity : AppCompatActivity() {
         call.enqueue(object : Callback<ContactItem> {
             override fun onResponse(call: Call<ContactItem>, response: Response<ContactItem>) {
                 if (response.isSuccessful) {
-                    user = response.body() // Shrani uporabnika kot razredno spremenljivko
+                    user = response.body()
 
-                    // Preverite, ali je uporabnik pravilno pridobljen iz odgovora API klica
                     if (user != null) {
-                        // Uporabite pridobljene podatke za izpolnitev polj
                         binding.twProfileUserName.text = user!!.userName
                         binding.twProfileEmail.text = user!!.email
                         binding.twEditProfileUserName.text = user!!.userName
@@ -94,7 +97,6 @@ class ProfileActivity : AppCompatActivity() {
         })
 
         binding.ivEditProfileImage.setOnClickListener(){
-            // Odprite galerijo za izbiro slike profila
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
             startActivityForResult(intent, IMAGE_PICK_CODE)
@@ -131,6 +133,11 @@ class ProfileActivity : AppCompatActivity() {
             finish()
         }
 
+        binding.ivBack.setOnClickListener(){
+            val intent = Intent(this@ProfileActivity, MainActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -163,11 +170,9 @@ class ProfileActivity : AppCompatActivity() {
                         val byteArray = byteArrayOutputStream.toByteArray()
                         val base64String = Base64.encodeToString(byteArray, Base64.DEFAULT)
 
-                        // Klic REST API in posodobitev profila z Base64 sliko
-                        if (user != null) { // Preveri, ali
-                            // je uporabnik pridobljen
+                        if (user != null) {
 
-                            val id = user?.userId ?: -1 // Predpostavimo neko privzeto vrednost, npr. -1
+                            val id = user?.userId ?: -1
 
                             val userName = binding.twEditProfileUserName.text.toString()
                             val phone = binding.twEditProfilePhone.text.toString()
@@ -181,11 +186,9 @@ class ProfileActivity : AppCompatActivity() {
                             call.enqueue(object : Callback<Void> {
                                 override fun onResponse(call: Call<Void>, response: Response<Void>) {
                                     if (response.isSuccessful) {
-                                        // Dekodirajte base64 niz v sliko
                                         val decodedByteArray = Base64.decode(base64String, Base64.DEFAULT)
                                         val decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.size)
 
-                                        // Nastavite dekodirano sliko v ImageView
                                         binding.imageView.setImageBitmap(decodedBitmap)
                                         binding.ivEditProfileImage.setImageBitmap(decodedBitmap)
 
@@ -199,7 +202,6 @@ class ProfileActivity : AppCompatActivity() {
                                 }
 
                                 override fun onFailure(call: Call<Void>, t: Throwable) {
-                                    // Napaka pri komunikaciji s strežnikom
                                 }
                             })
                         } else {
@@ -214,8 +216,6 @@ class ProfileActivity : AppCompatActivity() {
             }
         }
     }
-
-
 
     private fun resizeBitmap(uri: Uri, maxSize: Int): Bitmap? {
         return try {

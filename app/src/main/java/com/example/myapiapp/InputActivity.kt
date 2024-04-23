@@ -6,24 +6,25 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
 import android.util.Log
-import android.view.animation.AnimationUtils
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.example.myapiapp.databinding.ActivityInputBinding
-import com.example.myapiapp.databinding.ActivityLoginBinding
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.AnimationUtils
+import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.example.myapiapp.databinding.ActivityInputBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -38,7 +39,14 @@ class InputActivity : AppCompatActivity() {
         binding = ActivityInputBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
-        //hideSystemUI();
+
+        window.decorView.apply {
+            systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        }
+
+        setRequiredField(binding.etInvNumber)
+        setRequiredField(binding.etInvTitle)
+        setRequiredField(binding.etLocation)
 
         val currentDate = LocalDate.now()
 
@@ -98,21 +106,29 @@ class InputActivity : AppCompatActivity() {
         binding.etInvNumber.text = Editable.Factory.getInstance().newEditable(barcodeContent)
 
 
-        binding.btnAddInventory.setOnClickListener(){
+        binding.btnAddInventory.setOnClickListener {
             val inventoryNumber = binding.etInvNumber.text.toString().trim()
-            val inventoryName  = binding.etInvTitle.text.toString().trim()
-
-            // Nastavitev vrednosti EditText z današnjim datumom
-            binding.etInputDate.text = Editable.Factory.getInstance().newEditable(formattedDate)
+            val inventoryName = binding.etInvTitle.text.toString().trim()
             val locationRoom = binding.etLocation.text.toString().trim()
 
-            val addToInventoryRequest = InventoryItem(
-                null, inventoryNumber, inventoryName, formattedDate, locationRoom, userId!!
-            )
-            addToInventory(addToInventoryRequest)
+            if (inventoryNumber.isEmpty() || inventoryName.isEmpty() || locationRoom.isEmpty()) {
+                // Ena ali več polj je praznih, prikažite opozorilo uporabniku
+                Toast.makeText(this, "Izpolni vsa vnosna polja", Toast.LENGTH_SHORT).show()
+            } else {
+                binding.etInputDate.text = Editable.Factory.getInstance().newEditable(formattedDate)
+                val addToInventoryRequest = InventoryItem(
+                    null, inventoryNumber, inventoryName, formattedDate, locationRoom, userId!!
+                )
+                addToInventory(addToInventoryRequest)
 
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            }
+        }
+
+
+        binding.ivBack.setOnClickListener(){
+            onBackPressed()
         }
     }
 
@@ -176,8 +192,13 @@ class InputActivity : AppCompatActivity() {
         })
     }
 
-
-
-
+    private fun setRequiredField(editText: EditText) {
+        val hint = editText.hint ?: return
+        val builder = SpannableStringBuilder(hint)
+        val primaryColor = ContextCompat.getColor(this, R.color.primary)
+        val redColorSpan = ForegroundColorSpan(primaryColor)
+        builder.setSpan(redColorSpan, hint.length - 1, hint.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        editText.hint = builder
+    }
 }
 

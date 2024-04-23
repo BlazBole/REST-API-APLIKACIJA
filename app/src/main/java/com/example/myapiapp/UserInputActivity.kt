@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -36,10 +37,18 @@ class UserInputActivity : AppCompatActivity(), RecyclerViewInterface {
         enableEdgeToEdge()
         setContentView(binding.root)
 
+        window.decorView.apply {
+            systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        }
+
         val sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         username = sharedPrefs.getString("USERNAME","").toString()
 
         fetchInventoryFromApi()
+
+        binding.ivBack.setOnClickListener(){
+            onBackPressed()
+        }
     }
 
     override fun onItemClick(position: Int) {
@@ -105,11 +114,6 @@ class UserInputActivity : AppCompatActivity(), RecyclerViewInterface {
         })
     }
 
-
-
-
-
-
     fun fetchInventoryFromApi() {
         val retrofit = Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
@@ -160,7 +164,6 @@ class UserInputActivity : AppCompatActivity(), RecyclerViewInterface {
         recyclerView = findViewById(R.id.recyclerView)
         layoutManager = LinearLayoutManager(this)
         adapter = MyAdapterFilter(inventoryList, this)
-
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
     }

@@ -32,6 +32,7 @@ import java.util.Date
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.util.Log
+import android.view.View
 
 class MainActivity : AppCompatActivity(), RecyclerViewInterface {
 
@@ -50,6 +51,10 @@ class MainActivity : AppCompatActivity(), RecyclerViewInterface {
         binding = ActivityMainBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
+
+        window.decorView.apply {
+            systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        }
 
         fetchInventoryFromApi()
 
@@ -74,22 +79,22 @@ class MainActivity : AppCompatActivity(), RecyclerViewInterface {
         call.enqueue(object : Callback<ContactItem> {
             override fun onResponse(call: Call<ContactItem>, response: Response<ContactItem>) {
                 if (response.isSuccessful) {
-                    user = response.body() 
+                    user = response.body()
 
                     if (user != null) {
                         val decodedByteArray = Base64.decode(user!!.image, Base64.DEFAULT)
                         val decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.size)
                         profileImage.setImageBitmap(decodedBitmap)
                     } else {
-                        Toast.makeText(applicationContext, "Uporabnik ni bil najden.", Toast.LENGTH_SHORT).show()
+                        Log.e("UserInputActivity", "Uporabnik ni bil najden.")
                     }
                 } else {
-                    Toast.makeText(applicationContext, "Napaka pri pridobivanju podatkov o uporabniku.", Toast.LENGTH_SHORT).show()
+                    Log.e("UserInputActivity", "Napaka pri pridobivanju podatkov o uporabniku.")
                 }
             }
 
             override fun onFailure(call: Call<ContactItem>, t: Throwable) {
-                Toast.makeText(applicationContext, "Napaka pri izvedbi API klica.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "Napaka pri pridobivanu podatkov.", Toast.LENGTH_SHORT).show()
             }
         })
 
@@ -99,8 +104,26 @@ class MainActivity : AppCompatActivity(), RecyclerViewInterface {
 
 
         navHeaderView.findViewById<ImageView>(R.id.editProfileIcon).setOnClickListener(){
-            val intent = Intent(this, ProfileActivity::class.java)
-            startActivity(intent)
+            val sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+            val username = sharedPrefs.getString("USERNAME", "")
+
+            if (username.isNullOrEmpty()) {
+                val alertDialogBuilder = AlertDialog.Builder(this)
+                alertDialogBuilder.setTitle("Obvestilo")
+                alertDialogBuilder.setMessage("Najprej se morate prijaviti.")
+                alertDialogBuilder.setPositiveButton("Prijavi se") { dialog, which ->
+                    val intent = Intent(this, LoginActivity::class.java)
+                    startActivity(intent)
+                    dialog.dismiss()
+                }
+                alertDialogBuilder.setNegativeButton("Prekliči") { dialog, which ->
+                    dialog.dismiss()
+                }
+                alertDialogBuilder.create().show()
+            } else {
+                val intent = Intent(this, ProfileActivity::class.java)
+                startActivity(intent)
+            }
         }
 
         if (username.isNullOrEmpty()) {
@@ -246,21 +269,38 @@ class MainActivity : AppCompatActivity(), RecyclerViewInterface {
         }
 
         binding.btnAddScan.setOnClickListener {
-            if (ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.CAMERA
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.CAMERA),
-                    CAMERA_PERMISSION_REQUEST_CODE
-                )
+            val sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+            val username = sharedPrefs.getString("USERNAME", "")
+
+            if (username.isNullOrEmpty()) {
+                val alertDialogBuilder = AlertDialog.Builder(this)
+                alertDialogBuilder.setTitle("Obvestilo")
+                alertDialogBuilder.setMessage("Najprej se morate prijaviti.")
+                alertDialogBuilder.setPositiveButton("Prijavi se") { dialog, which ->
+                    val intent = Intent(this, LoginActivity::class.java)
+                    startActivity(intent)
+                    dialog.dismiss()
+                }
+                alertDialogBuilder.setNegativeButton("Prekliči") { dialog, which ->
+                    dialog.dismiss()
+                }
+                alertDialogBuilder.create().show()
             } else {
-                IntentIntegrator(this).initiateScan()
+                if (ActivityCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.CAMERA
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(Manifest.permission.CAMERA),
+                        CAMERA_PERMISSION_REQUEST_CODE
+                    )
+                } else {
+                    IntentIntegrator(this).initiateScan()
+                }
             }
         }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -276,7 +316,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewInterface {
                 startActivity(intent)
 
             } else {
-                Toast.makeText(this, "Skeniranje preklicano ali ni bilo mogoče prebrati QR kode", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Ni bilo mogoče prebrati QR kode", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -311,20 +351,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewInterface {
     }
 
     override fun onItemLongClick(position: Int) {
-        // Ob dolgem kliku na element RecyclerView prikažemo dialog za potrditev brisanja
-        val alertDialogBuilder = AlertDialog.Builder(this)
-        alertDialogBuilder.setTitle("Potrditev brisanja")
-        alertDialogBuilder.setMessage("Ste prepričani, da želite izbrisati ta inventar?")
-        alertDialogBuilder.setPositiveButton("Da") { dialog, which ->
-            // Izbris itema iz seznama in obvestimo adapter
-            inventoryList = inventoryList.filterIndexed { index, _ -> index != position }
-            adapter.notifyDataSetChanged()
-            dialog.dismiss()
-        }
-        alertDialogBuilder.setNegativeButton("Ne") { dialog, which ->
-            dialog.dismiss()
-        }
-        alertDialogBuilder.create().show()
+
     }
 
     fun fetchInventoryFromApi() {
@@ -342,13 +369,11 @@ class MainActivity : AppCompatActivity(), RecyclerViewInterface {
                     val inventoryList = response.body() ?: emptyList()
                     setupRecyclerView(inventoryList)
                 } else {
-                    // Napaka pri pridobivanju inventarja
                     Toast.makeText(applicationContext, "Napaka pri pridobivanju inventarja", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<List<InventoryItem>>, t: Throwable) {
-                // Napaka pri klicanju REST API-ja
                 Log.e("MainActivity", "Error: ${t.message}")
                 Toast.makeText(applicationContext, "Napaka pri izvajanju zahtevka", Toast.LENGTH_SHORT).show()
             }

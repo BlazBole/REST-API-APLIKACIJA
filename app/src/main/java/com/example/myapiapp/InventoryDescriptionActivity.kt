@@ -4,6 +4,7 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -27,6 +28,10 @@ class InventoryDescriptionActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(binding.root)
 
+        window.decorView.apply {
+            systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        }
+
         binding.twInvNumber.text = intent.getStringExtra("INVNUMBER")
         binding.twInvNumCorner.text = intent.getStringExtra("INVNUMBER")
         binding.twInvTitle.text = intent.getStringExtra("INVTITLE")
@@ -37,6 +42,10 @@ class InventoryDescriptionActivity : AppCompatActivity() {
         //binding.twProfileUserName.text = userName
 
         fatchUserByUsername();
+
+        binding.ivBack.setOnClickListener(){
+            onBackPressed()
+        }
 
     }
 
