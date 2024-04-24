@@ -33,6 +33,7 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.util.Log
 import android.view.View
+import androidx.core.view.isVisible
 
 class MainActivity : AppCompatActivity(), RecyclerViewInterface {
 
@@ -51,6 +52,8 @@ class MainActivity : AppCompatActivity(), RecyclerViewInterface {
         binding = ActivityMainBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
+
+        binding.emptyTextView.isVisible = false
 
         window.decorView.apply {
             systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -386,5 +389,9 @@ class MainActivity : AppCompatActivity(), RecyclerViewInterface {
         adapter = MyAdapter(inventoryList, this)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
+
+        if (inventoryList.isEmpty()) {
+            binding.emptyTextView.isVisible = true
+        }
     }
 }

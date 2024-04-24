@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapiapp.databinding.ActivityUserInputBinding
@@ -36,6 +37,9 @@ class UserInputActivity : AppCompatActivity(), RecyclerViewInterface {
         binding = ActivityUserInputBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
+
+        binding.emptyTextView.isVisible = false
+
 
         window.decorView.apply {
             systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -166,5 +170,10 @@ class UserInputActivity : AppCompatActivity(), RecyclerViewInterface {
         adapter = MyAdapterFilter(inventoryList, this)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
+
+        if (inventoryList.isEmpty()) {
+            binding.emptyTextView.isVisible = true
+        }
+
     }
 }
