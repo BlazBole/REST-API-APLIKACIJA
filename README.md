@@ -37,3 +37,9 @@ Branch s stored procedurami vsebuje SQL skripte za shranjevanje in izvajanje sto
 
 Blaž Bole
 
+## Izgled
+
+![Image](image1.png)
+![Image](image2.png)
+![Image](image3.png)
+
