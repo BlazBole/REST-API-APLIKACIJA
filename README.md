@@ -21,3 +21,9 @@ Glavna funkcija aplikacije je upravljanje s seznamom inventarja. Uporabniki lahk
 ## Uporaba API-jev
 
 Aplikacija komunicira s strežnikom preko HTTP API klicev na .NET REST API. Z uporabo knjižnice Retrofit2 se vzpostavi povezava med mobilno aplikacijo in strežnikom, kar omogoča obdelavo različnih zahtevkov.
+
+## Izgled
+
+![Image](image1.png)
+![Image](image2.png)
+![Image](image3.png)
